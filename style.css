@@ -1,5 +1,7 @@
 /* ==========================================================================
    FarmaMatch - Jogo da Memória Farmacêutico
+   Autor: Rafael Alves (@spiritstonesrafa-ux)
+   © 2026 Rafael Alves. Todos os direitos reservados.
    Design System & Stylesheet
    ========================================================================== */
 
@@ -1131,11 +1133,24 @@ body {
 /* --- Footer --- */
 .game-footer {
   text-align: center;
-  padding: 1rem 0;
-  font-size: 0.75rem;
+  padding: 1.25rem 0 0.5rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   border-top: 1px solid var(--border-subtle);
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.game-footer strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.footer-subtext {
+  font-size: 0.72rem;
+  color: var(--text-light);
 }
 
 /* ==========================================================================

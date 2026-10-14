@@ -114,3 +114,11 @@ python -m http.server 3000
 npx serve .
 ```
 E acesse `http://localhost:3000`.
+
+---
+
+## 👤 Autor & Direitos Autorais
+
+Desenvolvido por **Rafael Alves** ([@spiritstonesrafa-ux](https://github.com/spiritstonesrafa-ux)).  
+© 2026 **Rafael Alves**. Todos os direitos reservados.
+

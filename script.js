@@ -1,5 +1,7 @@
 /**
  * FarmaMatch - Jogo da Memória Farmacêutico
+ * Autor: Rafael Alves (@spiritstonesrafa-ux)
+ * © 2026 Rafael Alves. Todos os direitos reservados.
  * JavaScript Vanilla ES6+ Modular
  */
 
