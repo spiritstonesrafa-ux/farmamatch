@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FarmaMatch - Jogo da Memória Farmacêutico moderno e interativo. Teste suas habilidades de memorização com itens de saúde e farmácia.">
+  <meta name="theme-color" content="#10b981">
+  <title>FarmaMatch | Jogo da Memória Farmacêutico</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Decorative Shapes -->
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+  <div class="bg-crosses" aria-hidden="true"></div>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="game-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M2 12h20"/>
+            <circle cx="12" cy="12" r="9" stroke-width="1.8" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">Farma<span>Match</span></h1>
+          <p class="brand-subtitle">Desafio da Memória Farmacêutica</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="records-btn" class="icon-btn" title="Ver Melhores Recordes" aria-label="Melhores Recordes">
+          <i data-lucide="trophy"></i>
+          <span class="btn-tooltip">Recordes</span>
+        </button>
+        <button id="mute-btn" class="icon-btn" title="Ativar/Desativar Som" aria-label="Alternar Som">
+          <i id="mute-icon" data-lucide="volume-2"></i>
+          <span class="btn-tooltip">Som</span>
+        </button>
+        <button id="how-to-play-btn" class="icon-btn" title="Como Jogar" aria-label="Instruções">
+          <i data-lucide="help-circle"></i>
+          <span class="btn-tooltip">Ajuda</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Difficulty Pills Selector -->
+    <section class="difficulty-section" aria-label="Seleção de Dificuldade">
+      <span class="difficulty-label">Dificuldade:</span>
+      <div class="difficulty-pills" role="tablist">
+        <button type="button" role="tab" class="pill-btn" data-difficulty="easy" id="diff-easy" aria-selected="false">
+          <span class="pill-title">Fácil</span>
+          <span class="pill-badge">6 pares</span>
+        </button>
+        <button type="button" role="tab" class="pill-btn active" data-difficulty="medium" id="diff-medium" aria-selected="true">
+          <span class="pill-title">Médio</span>
+          <span class="pill-badge">8 pares</span>
+        </button>
+        <button type="button" role="tab" class="pill-btn" data-difficulty="hard" id="diff-hard" aria-selected="false">
+          <span class="pill-title">Difícil</span>
+          <span class="pill-badge">12 pares</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Game HUD / Stats Panel -->
+    <section class="hud-panel" aria-label="Painel de Status da Partida">
+      <div class="stat-card">
+        <div class="stat-icon timer-icon">
+          <i data-lucide="timer"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Tempo</span>
+          <span class="stat-value" id="timer-display">00:00</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon moves-icon">
+          <i data-lucide="footprints"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Movimentos</span>
+          <span class="stat-value" id="moves-display">0</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon pairs-icon">
+          <i data-lucide="check-check"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Pares</span>
+          <span class="stat-value" id="pairs-display">0 / 8</span>
+        </div>
+      </div>
+
+      <div class="stat-card record-card" id="hud-best-card" title="Seu melhor resultado nesta dificuldade">
+        <div class="stat-icon trophy-icon">
+          <i data-lucide="award"></i>
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Melhor Recorde</span>
+          <span class="stat-value record-val" id="hud-best-record">--:--</span>
+        </div>
+      </div>
+
+      <div class="hud-action">
+        <button id="reset-btn" class="btn-primary" aria-label="Reiniciar Jogo">
+          <i data-lucide="rotate-ccw"></i>
+          <span>Novo Jogo</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Game Board -->
+    <main class="board-wrapper">
+      <div id="game-board" class="game-board medium-grid" role="grid" aria-label="Tabuleiro do Jogo da Memória">
+        <!-- Cards dynamically injected via script.js -->
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="game-footer">
+      <p>Desenvolvido com carinho para profissionais e estudantes de saúde & farmácia • 100% Livre de anúncios</p>
+    </footer>
+  </div>
+
+  <!-- Modal de Vitória -->
+  <div id="victory-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="victory-title">
+    <div class="modal-card victory-card">
+      <div class="modal-badge-wrapper">
+        <div class="victory-trophy">
+          <i data-lucide="party-popper"></i>
+        </div>
+      </div>
+
+      <div class="stars-rating" id="victory-stars" aria-label="Classificação por estrelas">
+        <span class="star-item"><i data-lucide="star"></i></span>
+        <span class="star-item"><i data-lucide="star"></i></span>
+        <span class="star-item"><i data-lucide="star"></i></span>
+      </div>
+
+      <h2 id="victory-title" class="modal-title">Diagnóstico: Perfeito! 🎉</h2>
+      <p class="modal-subtitle">Você encontrou todos os pares e concluiu o plantão farmacêutico com sucesso!</p>
+
+      <div id="new-record-alert" class="new-record-banner hidden">
+        <i data-lucide="sparkles"></i>
+        <span>NOVO RECORDE PESSOAL! 🏆</span>
+      </div>
+
+      <div class="modal-stats-grid">
+        <div class="modal-stat-box">
+          <span class="stat-box-label">Tempo Total</span>
+          <span class="stat-box-value" id="victory-time">01:24</span>
+        </div>
+        <div class="modal-stat-box">
+          <span class="stat-box-label">Movimentos</span>
+          <span class="stat-box-value" id="victory-moves">18</span>
+        </div>
+        <div class="modal-stat-box">
+          <span class="stat-box-label">Precisão</span>
+          <span class="stat-box-value" id="victory-accuracy">88%</span>
+        </div>
+        <div class="modal-stat-box">
+          <span class="stat-box-label">Dificuldade</span>
+          <span class="stat-box-value" id="victory-difficulty">Médio</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="victory-restart-btn" class="btn-primary btn-large">
+          <i data-lucide="play"></i>
+          <span>Jogar Novamente</span>
+        </button>
+        <button id="victory-share-btn" class="btn-secondary">
+          <i data-lucide="share-2"></i>
+          <span>Compartilhar Resultado</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Melhores Recordes -->
+  <div id="records-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="records-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-icon">
+          <i data-lucide="award"></i>
+        </div>
+        <div>
+          <h2 id="records-title" class="modal-title">Quadro de Honra</h2>
+          <p class="modal-subtitle">Seus melhores resultados salvos localmente</p>
+        </div>
+        <button class="modal-close-btn" data-close-modal="records-modal" aria-label="Fechar Modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="records-list">
+        <!-- Fácil -->
+        <div class="record-row">
+          <div class="record-diff-badge easy">Fácil (6 pares)</div>
+          <div class="record-details">
+            <div class="record-item">
+              <span class="label">Melhor Tempo:</span>
+              <strong id="record-time-easy">--:--</strong>
+            </div>
+            <div class="record-item">
+              <span class="label">Menos Movimentos:</span>
+              <strong id="record-moves-easy">--</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Médio -->
+        <div class="record-row">
+          <div class="record-diff-badge medium">Médio (8 pares)</div>
+          <div class="record-details">
+            <div class="record-item">
+              <span class="label">Melhor Tempo:</span>
+              <strong id="record-time-medium">--:--</strong>
+            </div>
+            <div class="record-item">
+              <span class="label">Menos Movimentos:</span>
+              <strong id="record-moves-medium">--</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Difícil -->
+        <div class="record-row">
+          <div class="record-diff-badge hard">Difícil (12 pares)</div>
+          <div class="record-details">
+            <div class="record-item">
+              <span class="label">Melhor Tempo:</span>
+              <strong id="record-time-hard">--:--</strong>
+            </div>
+            <div class="record-item">
+              <span class="label">Menos Movimentos:</span>
+              <strong id="record-moves-hard">--</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-row">
+        <button id="clear-records-btn" class="btn-danger-ghost">
+          <i data-lucide="trash-2"></i>
+          <span>Limpar Recordes</span>
+        </button>
+        <button class="btn-secondary" data-close-modal="records-modal">
+          <span>Fechar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Como Jogar -->
+  <div id="instructions-modal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="instructions-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-header-icon help-icon">
+          <i data-lucide="book-open"></i>
+        </div>
+        <div>
+          <h2 id="instructions-title" class="modal-title">Como Jogar</h2>
+          <p class="modal-subtitle">Instruções do Jogo da Memória Farmacêutico</p>
+        </div>
+        <button class="modal-close-btn" data-close-modal="instructions-modal" aria-label="Fechar Modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="instructions-content">
+        <div class="instruction-step">
+          <div class="step-num">1</div>
+          <div class="step-desc">
+            <strong>Vire duas cartas por vez:</strong> Clique em qualquer carta para revelar seu item farmacêutico. O cronômetro inicia no seu primeiro clique!
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">2</div>
+          <div class="step-desc">
+            <strong>Combine os pares:</strong> Se as cartas forem idênticas, elas ficarão fixadas com um brilho esmeralda. Se forem diferentes, elas desvirarão após um breve momento.
+          </div>
+        </div>
+        <div class="instruction-step">
+          <div class="step-num">3</div>
+          <div class="step-desc">
+            <strong>Conquiste 3 Estrelas:</strong> Quanto menos movimentos e menos tempo você gastar para encontrar todos os pares, maior será sua classificação e seu novo recorde!
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer-row justify-end">
+        <button class="btn-primary" data-close-modal="instructions-modal">
+          <span>Entendi, vamos jogar!</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification (for copy/share, notifications) -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Game Logic Script -->
+  <script src="script.js"></script>
+</body>
+</html>
