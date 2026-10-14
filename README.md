@@ -1,5 +1,7 @@
 # 💊 FarmaMatch | Jogo da Memória Farmacêutico
 
+> 🌐 **Jogue online agora:** [https://spiritstonesrafa-ux.github.io/farmamatch/](https://spiritstonesrafa-ux.github.io/farmamatch/)
+
 Um jogo da memória estático, moderno, acessível e 100% responsivo, desenvolvido com foco na temática de **Farmácia, Saúde e Bioquímica**.
 
 Pronto para deploy instantâneo no **GitHub Pages**, sem a necessidade de build, bundlers ou servidores backend.
